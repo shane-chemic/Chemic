@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHEMIC Setlist Vote - Shane</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #e8ddd0;
+            --cream-light: #f2ebe0;
+            --cream-dark: #d4c9bc;
+            --red: #c41e3a;
+            --red-dark: #8b1528;
+            --red-muted: #a62d42;
+            --brown: #6b5b4f;
+            --brown-light: #8a7a6d;
+        }
+
+        body {
+            background: var(--cream);
+            color: var(--red-dark);
+            font-family: 'IBM Plex Mono', monospace;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--brown);
+            text-decoration: none;
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .back-link:hover {
+            color: var(--red);
+        }
+
+        .header {
+            border-bottom: 3px solid var(--red);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--red);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--brown);
+            font-size: 0.75rem;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+
+        .section-title {
+            font-size: 0.7rem;
+            color: var(--brown);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .instructions {
+            font-size: 0.75rem;
+            color: var(--brown);
+            margin-bottom: 16px;
+        }
+
+        /* Draggable List */
+        .song-list {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+
+        .song-item {
+            background: var(--cream-light);
+            border: 2px solid var(--red);
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            user-select: none;
+            transition: all 0.15s ease;
+        }
+
+        .song-item:active {
+            cursor: grabbing;
+        }
+
+        .song-item:hover {
+            background: var(--cream);
+            border-color: var(--red-dark);
+        }
+
+        .song-item.dragging {
+            opacity: 0.5;
+            background: var(--red);
+            color: var(--cream);
+        }
+
+        .song-number {
+            font-weight: 700;
+            color: var(--red);
+            min-width: 24px;
+        }
+
+        .song-item.dragging .song-number {
+            color: var(--cream);
+        }
+
+        .drag-handle {
+            color: var(--brown-light);
+            font-size: 1rem;
+        }
+
+        .song-name {
+            flex: 1;
+        }
+
+        /* Cover Input */
+        .cover-section {
+            margin-bottom: 32px;
+        }
+
+        .cover-input {
+            width: 100%;
+            background: var(--cream-light);
+            border: 2px solid var(--red);
+            padding: 14px 16px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--red-dark);
+        }
+
+        .cover-input:focus {
+            outline: none;
+            border-color: var(--red-dark);
+            background: var(--cream);
+        }
+
+        .cover-input::placeholder {
+            color: var(--brown-light);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: var(--red);
+            border: 2px solid var(--red);
+            color: var(--cream);
+            padding: 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--red-dark);
+            border-color: var(--red-dark);
+        }
+
+        .submit-btn:disabled {
+            background: var(--brown-light);
+            border-color: var(--brown-light);
+            cursor: not-allowed;
+        }
+
+        .status-line {
+            font-size: 0.7rem;
+            color: var(--brown);
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid var(--cream-dark);
+            text-align: center;
+        }
+
+        .success-message {
+            background: var(--red);
+            color: var(--cream);
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← BACK</a>
+        
+        <div class="header">
+            <h1>SETLIST VOTE</h1>
+            <div class="subtitle">SHANE</div>
+        </div>
+
+        <div id="success-message" class="success-message hidden">
+            Vote submitted! Thanks Shane.
+        </div>
+
+        <form id="vote-form" action="https://formspree.io/f/mojaqabn" method="POST">
+            <input type="hidden" name="member" value="Shane">
+            <input type="hidden" name="setlist_order" id="setlist-order">
+
+            <div class="section-title">Song Order</div>
+            <p class="instructions">Drag to reorder. Top = opener, bottom = closer.</p>
+            
+            <ul class="song-list" id="song-list">
+                <li class="song-item" data-song="Mississippi in Memphis">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">1</span>
+                    <span class="song-name">Mississippi in Memphis</span>
+                </li>
+                <li class="song-item" data-song="You Should Go">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">2</span>
+                    <span class="song-name">You Should Go</span>
+                </li>
+                <li class="song-item" data-song="I Now Know">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">3</span>
+                    <span class="song-name">I Now Know</span>
+                </li>
+                <li class="song-item" data-song="Don't Go Close">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">4</span>
+                    <span class="song-name">Don't Go Close</span>
+                </li>
+                <li class="song-item" data-song="Nothing Worth Keeping">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">5</span>
+                    <span class="song-name">Nothing Worth Keeping</span>
+                </li>
+                <li class="song-item" data-song="Calm Killers">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">6</span>
+                    <span class="song-name">Calm Killers</span>
+                </li>
+                <li class="song-item" data-song="Don't Stop">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">7</span>
+                    <span class="song-name">Don't Stop</span>
+                </li>
+                <li class="song-item" data-song="You Treat Me Like Science">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">8</span>
+                    <span class="song-name">You Treat Me Like Science</span>
+                </li>
+                <li class="song-item" data-song="Cover">
+                    <span class="drag-handle">☰</span>
+                    <span class="song-number">9</span>
+                    <span class="song-name">Cover</span>
+                </li>
+            </ul>
+
+            <div class="cover-section">
+                <div class="section-title">Cover Suggestion</div>
+                <input type="text" name="cover_suggestion" class="cover-input" placeholder="Artist - Song Title">
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Vote</button>
+        </form>
+
+        <div class="status-line">
+            CHEMIC // MARCH REUNION
+        </div>
+    </div>
+
+    <script>
+        // Drag and drop functionality
+        const songList = document.getElementById('song-list');
+        let draggedItem = null;
+
+        songList.addEventListener('dragstart', (e) => {
+            draggedItem = e.target.closest('.song-item');
+            if (draggedItem) {
+                draggedItem.classList.add('dragging');
+            }
+        });
+
+        songList.addEventListener('dragend', (e) => {
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
+                draggedItem = null;
+                updateNumbers();
+            }
+        });
+
+        songList.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(songList, e.clientY);
+            if (draggedItem) {
+                if (afterElement == null) {
+                    songList.appendChild(draggedItem);
+                } else {
+                    songList.insertBefore(draggedItem, afterElement);
+                }
+            }
+        });
+
+        // Make items draggable
+        document.querySelectorAll('.song-item').forEach(item => {
+            item.draggable = true;
+        });
+
+        // Touch support for mobile
+        let touchStartY = 0;
+        let currentTouchItem = null;
+
+        songList.addEventListener('touchstart', (e) => {
+            const item = e.target.closest('.song-item');
+            if (item) {
+                currentTouchItem = item;
+                touchStartY = e.touches[0].clientY;
+                item.classList.add('dragging');
+            }
+        }, { passive: true });
+
+        songList.addEventListener('touchmove', (e) => {
+            if (!currentTouchItem) return;
+            e.preventDefault();
+            
+            const touchY = e.touches[0].clientY;
+            const afterElement = getDragAfterElement(songList, touchY);
+            
+            if (afterElement == null) {
+                songList.appendChild(currentTouchItem);
+            } else {
+                songList.insertBefore(currentTouchItem, afterElement);
+            }
+        }, { passive: false });
+
+        songList.addEventListener('touchend', () => {
+            if (currentTouchItem) {
+                currentTouchItem.classList.remove('dragging');
+                currentTouchItem = null;
+                updateNumbers();
+            }
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.song-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function updateNumbers() {
+            document.querySelectorAll('.song-item').forEach((item, index) => {
+                item.querySelector('.song-number').textContent = index + 1;
+            });
+        }
+
+        // Form submission
+        document.getElementById('vote-form').addEventListener('submit', (e) => {
+            // Build the setlist order string
+            const songs = [...document.querySelectorAll('.song-item')].map((item, index) => {
+                return `${index + 1}. ${item.dataset.song}`;
+            });
+            document.getElementById('setlist-order').value = songs.join('\n');
+        });
+
+        // Show success message on return from Formspree
+        if (window.location.search.includes('submitted=true')) {
+            document.getElementById('success-message').classList.remove('hidden');
+            document.getElementById('vote-form').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

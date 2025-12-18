@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHEMIC Live Rig</title>
+    <title>CHEMIC</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -32,372 +32,118 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
         .header {
             border-bottom: 3px solid var(--red);
             padding-bottom: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            text-align: center;
         }
 
         h1 {
             font-family: 'Space Mono', monospace;
-            font-size: 1.8rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--red);
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             text-transform: uppercase;
         }
 
         .subtitle {
             color: var(--brown);
             font-size: 0.75rem;
-            margin-top: 6px;
-            letter-spacing: 1px;
+            margin-top: 8px;
+            letter-spacing: 2px;
         }
 
-        .terminal-block {
-            background: var(--cream-light);
-            border: 2px solid var(--red);
-            margin-bottom: 24px;
-            position: relative;
+        .nav-section {
+            margin-bottom: 32px;
         }
 
-        .terminal-header {
-            background: var(--red);
-            color: var(--cream);
-            padding: 8px 14px;
+        .nav-section-title {
             font-size: 0.7rem;
-            font-weight: 600;
+            color: var(--brown);
             letter-spacing: 2px;
             text-transform: uppercase;
+            margin-bottom: 12px;
         }
 
-        .terminal-body {
-            padding: 20px;
-        }
-
-        .terminal-line {
-            display: flex;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            line-height: 1.6;
-        }
-
-        .terminal-line:last-child {
-            margin-bottom: 0;
-        }
-
-        .prompt {
-            color: var(--red);
-            margin-right: 10px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .label {
-            color: var(--brown);
-            min-width: 120px;
-            flex-shrink: 0;
-        }
-
-        .value {
-            color: var(--red-dark);
-        }
-
-        .highlight {
-            background: var(--red);
-            color: var(--cream);
-            padding: 1px 6px;
-        }
-
-        .dim {
-            color: var(--brown-light);
-        }
-
-        /* Signal Flow Diagram */
-        .flow-diagram {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 30px 20px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .flow-node {
-            text-align: center;
-        }
-
-        .flow-box {
+        .nav-link {
+            display: block;
+            background: var(--cream-light);
             border: 2px solid var(--red);
             padding: 16px 20px;
-            background: var(--cream);
-            min-width: 100px;
+            margin-bottom: 8px;
+            text-decoration: none;
+            color: var(--red-dark);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.15s ease;
         }
 
-        .flow-box-label {
+        .nav-link:hover {
+            background: var(--red);
+            color: var(--cream);
+        }
+
+        .nav-link-desc {
+            font-weight: 400;
             font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--red);
-            letter-spacing: 1px;
-        }
-
-        .flow-box-sub {
-            font-size: 0.6rem;
             color: var(--brown);
             margin-top: 4px;
         }
 
-        .flow-arrow {
-            color: var(--red);
-            font-size: 1.2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
+        .nav-link:hover .nav-link-desc {
+            color: var(--cream-dark);
         }
 
-        .flow-arrow-label {
-            font-size: 0.55rem;
-            color: var(--brown);
-            letter-spacing: 1px;
-        }
-
-        .flow-split {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        /* MC6 Buttons */
-        .button-row {
+        .vote-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            max-width: 450px;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
-        .mc6-btn {
+        .vote-link {
+            display: block;
+            background: var(--cream-light);
             border: 2px solid var(--red);
-            padding: 14px;
+            padding: 14px 16px;
+            text-decoration: none;
+            color: var(--red-dark);
+            font-size: 0.85rem;
+            font-weight: 600;
             text-align: center;
-            background: var(--cream);
+            transition: all 0.15s ease;
         }
 
-        .mc6-btn:hover {
+        .vote-link:hover {
             background: var(--red);
             color: var(--cream);
         }
 
-        .mc6-btn:hover .btn-letter {
-            color: var(--cream);
-        }
-
-        .mc6-btn:hover .btn-action {
-            color: var(--cream);
-        }
-
-        .btn-letter {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--red);
-            margin-bottom: 6px;
-        }
-
-        .btn-action {
-            font-size: 0.7rem;
-            color: var(--red-dark);
-        }
-
-        /* Backup Tiers */
-        .backup-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .backup-tier {
-            border: 2px solid var(--red);
-            background: var(--cream);
-        }
-
-        .backup-number {
-            background: var(--red);
-            color: var(--cream);
-            padding: 8px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .backup-content {
-            padding: 16px;
-        }
-
-        .backup-scenario {
-            font-size: 0.65rem;
-            color: var(--brown);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .backup-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--red);
-            margin-bottom: 8px;
-        }
-
-        .backup-desc {
-            font-size: 0.75rem;
-            color: var(--red-dark);
-            line-height: 1.5;
-        }
-
-        /* Routing Table */
-        .route-row {
-            display: flex;
-            border-bottom: 1px solid var(--cream-dark);
-            padding: 10px 0;
-            font-size: 0.8rem;
-        }
-
-        .route-row:last-child {
-            border-bottom: none;
-        }
-
-        .route-from {
-            width: 100px;
-            color: var(--red);
-            font-weight: 600;
-        }
-
-        .route-arrow {
-            width: 60px;
-            color: var(--brown);
-            text-align: center;
-        }
-
-        .route-to {
-            width: 120px;
-            color: var(--red);
-            font-weight: 600;
-        }
-
-        .route-type {
-            width: 80px;
-            color: var(--brown-light);
-            font-size: 0.7rem;
-        }
-
-        .route-purpose {
-            flex: 1;
-            color: var(--red-dark);
-        }
-
-        /* Status indicator */
         .status-line {
             font-size: 0.7rem;
             color: var(--brown);
-            margin-top: 20px;
+            margin-top: 40px;
             padding-top: 20px;
             border-top: 1px solid var(--cream-dark);
-            display: flex;
-            justify-content: space-between;
+            text-align: center;
         }
 
-        .blink {
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        /* MOBILE RESPONSIVE */
         @media (max-width: 768px) {
             body {
                 padding: 20px;
             }
 
             h1 {
-                font-size: 1.3rem;
+                font-size: 2rem;
             }
 
-            /* Stack signal flow vertically */
-            .flow-diagram {
-                flex-direction: column;
-                gap: 8px;
-                padding: 20px 10px;
-            }
-
-            .flow-arrow {
-                transform: rotate(90deg);
-                margin: 4px 0;
-            }
-
-            .flow-split {
-                flex-direction: row;
-                gap: 10px;
-            }
-
-            .flow-box {
-                min-width: 80px;
-                padding: 12px 16px;
-            }
-
-            /* Stack equipment lines */
-            .terminal-line {
-                flex-direction: column;
-                gap: 4px;
-            }
-
-            .label {
-                min-width: auto;
-                font-weight: 600;
-            }
-
-            /* Stack routing table */
-            .route-row {
-                flex-direction: column;
-                gap: 4px;
-                padding: 12px 0;
-            }
-
-            .route-from, .route-to {
-                width: auto;
-            }
-
-            .route-arrow {
-                transform: none;
-                text-align: left;
-                width: auto;
-            }
-
-            .route-type {
-                width: auto;
-            }
-
-            /* MC6 buttons 2 columns on mobile */
-            .button-row {
-                grid-template-columns: repeat(2, 1fr);
-                max-width: 100%;
-            }
-
-            /* Stack backup tiers */
-            .backup-grid {
+            .vote-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .status-line {
-                flex-direction: column;
-                gap: 8px;
-                text-align: center;
             }
         }
     </style>
@@ -405,203 +151,30 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>CHEMIC / LIVE RIG</h1>
-            <div class="subtitle"> MARCH REUINION SHOW(S) // REAPER + MC6 + APOLLO</div>
+            <h1>CHEMIC</h1>
+            <div class="subtitle">MARCH REUNION</div>
         </div>
 
-        <!-- Signal Flow -->
-        <div class="terminal-block">
-            <div class="terminal-header">
-                <span>SIGNAL FLOW</span>
-            </div>
-            <div class="terminal-body">
-                <div class="flow-diagram">
-                    <div class="flow-node">
-                        <div class="flow-box">
-                            <div class="flow-box-label">MC6</div>
-                            <div class="flow-box-sub">FOOT CTRL</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flow-arrow">
-                        <span class="flow-arrow-label">MIDI CC</span>
-                        <span>→→→</span>
-                        <span class="flow-arrow-label">USB</span>
-                    </div>
-
-                    <div class="flow-node">
-                        <div class="flow-box">
-                            <div class="flow-box-label">MACBOOK</div>
-                            <div class="flow-box-sub">REAPER/CLOSED</div>
-                        </div>
-                    </div>
-
-                    <div class="flow-arrow">
-                        <span class="flow-arrow-label">AUDIO</span>
-                        <span>→→→</span>
-                        <span class="flow-arrow-label">THNDRBLT</span>
-                    </div>
-
-                    <div class="flow-node">
-                        <div class="flow-box">
-                            <div class="flow-box-label">APOLLO</div>
-                            <div class="flow-box-sub">INTERFACE</div>
-                        </div>
-                    </div>
-
-                    <div class="flow-arrow">
-                        <span class="flow-arrow-label">ANALOG</span>
-                        <span>→→→</span>
-                    </div>
-
-                    <div class="flow-split">
-                        <div class="flow-box" style="padding: 10px 16px;">
-                            <div class="flow-box-label">FOH</div>
-                            <div class="flow-box-sub">OUT 1/2</div>
-                        </div>
-                        <div class="flow-box" style="padding: 10px 16px;">
-                            <div class="flow-box-label">JON</div>
-                            <div class="flow-box-sub">OUT 3 CLICK</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Documents</div>
+            <a href="live-rig.html" class="nav-link">
+                Live Rig Workflow
+                <div class="nav-link-desc">Signal flow, MC6 assignments, backup plan</div>
+            </a>
         </div>
 
-        <!-- Equipment -->
-        <div class="terminal-block">
-            <div class="terminal-header">
-                <span>EQUIPMENT</span>
-            </div>
-            <div class="terminal-body">
-                <div class="terminal-line">
-                    <span class="prompt">></span>
-                    <span class="label">MACBOOK</span>
-                    <span class="value">Runs Reaper session with full setlist. Each song as region with markers for verse/chorus/bridge. Sends MIDI PC/CC for synth + pedalboard changes per section. <span class="highlight">CLOSED / HIDDEN</span></span>
-                </div>
-                <div class="terminal-line">
-                    <span class="prompt">></span>
-                    <span class="label">MC6</span>
-                    <span class="value">Primary transport control. Play/stop, advance songs, cue ambient stuff while tuning. All commands via MIDI CC to Reaper.</span>
-                </div>
-                <div class="terminal-line">
-                    <span class="prompt">></span>
-                    <span class="label">APOLLO</span>
-                    <span class="value">Audio interface. OUT 1/2 stereo to FOH. OUT 3 mono hardline click to Jon's IEM.</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Routing -->
-        <div class="terminal-block">
-            <div class="terminal-header">
-                <span>MIDI / AUDIO ROUTING</span>
-            </div>
-            <div class="terminal-body">
-                <div class="route-row">
-                    <span class="route-from">MC6</span>
-                    <span class="route-arrow">──▶</span>
-                    <span class="route-to">REAPER</span>
-                    <span class="route-type">[MIDI CC]</span>
-                    <span class="route-purpose">Transport: play / stop / next song</span>
-                </div>
-                <div class="route-row">
-                    <span class="route-from">REAPER</span>
-                    <span class="route-arrow">──▶</span>
-                    <span class="route-to">SYNTH + PEDALS</span>
-                    <span class="route-type">[MIDI PC]</span>
-                    <span class="route-purpose">Patch changes per song section</span>
-                </div>
-                <div class="route-row">
-                    <span class="route-from">REAPER</span>
-                    <span class="route-arrow">──▶</span>
-                    <span class="route-to">APOLLO 1/2</span>
-                    <span class="route-type">[AUDIO]</span>
-                    <span class="route-purpose">Stereo backing mix to FOH</span>
-                </div>
-                <div class="route-row">
-                    <span class="route-from">REAPER</span>
-                    <span class="route-arrow">──▶</span>
-                    <span class="route-to">APOLLO 3</span>
-                    <span class="route-type">[AUDIO]</span>
-                    <span class="route-purpose">Click track to Jon</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- MC6 Buttons -->
-        <div class="terminal-block">
-            <div class="terminal-header">
-                <span>MC6 ASSIGNMENTS</span>
-            </div>
-            <div class="terminal-body">
-                <div class="button-row">
-                    <div class="mc6-btn">
-                        <div class="btn-letter">A</div>
-                        <div class="btn-action">▶ PLAY / STOP</div>
-                    </div>
-                    <div class="mc6-btn">
-                        <div class="btn-letter">B</div>
-                        <div class="btn-action">⏭ NEXT SONG</div>
-                    </div>
-                    <div class="mc6-btn">
-                        <div class="btn-letter">C</div>
-                        <div class="btn-action">⏮ PREV SONG</div>
-                    </div>
-                    <div class="mc6-btn">
-                        <div class="btn-letter">D</div>
-                        <div class="btn-action">🎹 AMBIENT CUE</div>
-                    </div>
-                    <div class="mc6-btn">
-                        <div class="btn-letter">E</div>
-                        <div class="btn-action">— SPARE</div>
-                    </div>
-                    <div class="mc6-btn">
-                        <div class="btn-letter">F</div>
-                        <div class="btn-action">🆘 BACKUP WAV</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Backup Tiers -->
-        <div class="terminal-block">
-            <div class="terminal-header">
-                <span>BACKUP PLAN</span>
-            </div>
-            <div class="terminal-body">
-                <div class="backup-grid">
-                    <div class="backup-tier">
-                        <div class="backup-number">BACKUP 01</div>
-                        <div class="backup-content">
-                            <div class="backup-scenario">Multitrack failure</div>
-                            <div class="backup-title">MC6 WAV CUE</div>
-                            <div class="backup-desc">Button F triggers pre-rendered stereo tracks.</div>
-                        </div>
-                    </div>
-                    <div class="backup-tier">
-                        <div class="backup-number">BACKUP 02</div>
-                        <div class="backup-content">
-                            <div class="backup-scenario">Reaper failure</div>
-                            <div class="backup-title">RENDERED STEMS</div>
-                            <div class="backup-desc">Full setlist as .wav files on Mac.</div>
-                        </div>
-                    </div>
-                    <div class="backup-tier">
-                        <div class="backup-number">BACKUP 03</div>
-                        <div class="backup-content">
-                            <div class="backup-scenario">Total system failure</div>
-                            <div class="backup-title">SECONDARY DEVICE</div>
-                            <div class="backup-desc">Phone or iPad with stems loaded. Direct line to FOH. Jon counts in.</div>
-                        </div>
-                    </div>
-                </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Setlist Vote</div>
+            <div class="vote-grid">
+                <a href="vote-ben.html" class="vote-link">Ben</a>
+                <a href="vote-jon.html" class="vote-link">Jon</a>
+                <a href="vote-scott.html" class="vote-link">Scott</a>
+                <a href="vote-shane.html" class="vote-link">Shane</a>
             </div>
         </div>
 
         <div class="status-line">
-            <span>CHEMIC // FEVER ON THE FOREST FLOOR</span>
-            <span><span class="blink">●</span> SYSTEM READY</span>
+            CHEMIC // MARCH REUNION
         </div>
     </div>
 </body>
