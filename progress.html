@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHEMIC Progress</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #e8ddd0;
+            --cream-light: #f2ebe0;
+            --cream-dark: #d4c9bc;
+            --red: #c41e3a;
+            --red-dark: #8b1528;
+            --red-muted: #a62d42;
+            --brown: #6b5b4f;
+            --brown-light: #8a7a6d;
+            --green: #2d5a3d;
+        }
+
+        body {
+            background: var(--cream);
+            color: var(--red-dark);
+            font-family: 'IBM Plex Mono', monospace;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--brown);
+            text-decoration: none;
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .back-link:hover {
+            color: var(--red);
+        }
+
+        .header {
+            border-bottom: 3px solid var(--red);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--red);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--brown);
+            font-size: 0.75rem;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+
+        .terminal-block {
+            background: var(--cream-light);
+            border: 2px solid var(--red);
+            margin-bottom: 24px;
+        }
+
+        .terminal-header {
+            background: var(--red);
+            color: var(--cream);
+            padding: 8px 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        /* Progress Grid */
+        .progress-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+
+        .progress-table th {
+            background: var(--cream);
+            color: var(--brown);
+            font-weight: 600;
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 2px solid var(--red);
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .progress-table th:first-child {
+            text-align: left;
+        }
+
+        .progress-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--cream-dark);
+            text-align: center;
+        }
+
+        .progress-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: var(--red-dark);
+        }
+
+        .progress-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .song-name {
+            min-width: 180px;
+        }
+
+        .tempo {
+            color: var(--brown);
+            font-size: 0.8rem;
+        }
+
+        .key {
+            color: var(--brown);
+            font-size: 0.8rem;
+        }
+
+        /* Status indicators */
+        .status {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid;
+        }
+
+        .status-done {
+            background: var(--green);
+            border-color: var(--green);
+        }
+
+        .status-progress {
+            background: transparent;
+            border-color: var(--red);
+            position: relative;
+        }
+
+        .status-progress::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: var(--red);
+            border-radius: 50%;
+        }
+
+        .status-pending {
+            background: transparent;
+            border-color: var(--brown-light);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            font-size: 0.7rem;
+            color: var(--brown);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend .status {
+            width: 14px;
+            height: 14px;
+        }
+
+        .status-line {
+            font-size: 0.7rem;
+            color: var(--brown);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--cream-dark);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .progress-table {
+                font-size: 0.65rem;
+            }
+
+            .progress-table th,
+            .progress-table td {
+                padding: 8px 4px;
+            }
+
+            .song-name {
+                min-width: 120px;
+            }
+
+            .legend {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← BACK</a>
+        
+        <div class="header">
+            <h1>PROGRESS TRACKER</h1>
+            <div class="subtitle">MARCH REUNION // PRE-PRODUCTION STATUS</div>
+        </div>
+
+        <div class="terminal-block">
+            <div class="terminal-header">
+                <span>SONG STATUS</span>
+            </div>
+            <div class="terminal-body">
+                <table class="progress-table">
+                    <thead>
+                        <tr>
+                            <th class="song-name">Song</th>
+                            <th>Tempo</th>
+                            <th>Key</th>
+                            <th>Sections Mapped</th>
+                            <th>Arrangement Demo</th>
+                            <th>Backing Tracked</th>
+                            <th>CC Committed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mississippi in Memphis</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                        <tr>
+                            <td>You Should Go</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                        <tr>
+                            <td>I Now Know</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Don't Go Close</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Nothing Worth Keeping</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Calm Killers</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Don't Stop</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                        <tr>
+                            <td>You Treat Me Like Science</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Cover (TBD)</td>
+                            <td class="tempo">—</td>
+                            <td class="key">—</td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                            <td><span class="status status-pending"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="status status-done"></span>
+                        <span>Done</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="status status-progress"></span>
+                        <span>In Progress</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="status status-pending"></span>
+                        <span>Pending</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-line">
+            CHEMIC // MARCH REUNION
+        </div>
+    </div>
+</body>
+</html>

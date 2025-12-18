@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHEMIC Stage Plot</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #e8ddd0;
+            --cream-light: #f2ebe0;
+            --cream-dark: #d4c9bc;
+            --red: #c41e3a;
+            --red-dark: #8b1528;
+            --red-muted: #a62d42;
+            --brown: #6b5b4f;
+            --brown-light: #8a7a6d;
+        }
+
+        body {
+            background: var(--cream);
+            color: var(--red-dark);
+            font-family: 'IBM Plex Mono', monospace;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--brown);
+            text-decoration: none;
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .back-link:hover {
+            color: var(--red);
+        }
+
+        .header {
+            border-bottom: 3px solid var(--red);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--red);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--brown);
+            font-size: 0.75rem;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+
+        .terminal-block {
+            background: var(--cream-light);
+            border: 2px solid var(--red);
+            margin-bottom: 24px;
+        }
+
+        .terminal-header {
+            background: var(--red);
+            color: var(--cream);
+            padding: 8px 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .terminal-body {
+            padding: 20px;
+        }
+
+        /* Stage Plot Visual */
+        .stage-plot {
+            background: var(--cream);
+            border: 2px solid var(--brown);
+            padding: 30px 20px 20px;
+            position: relative;
+        }
+
+        .stage-label {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--cream-light);
+            padding: 2px 12px;
+            font-size: 0.65rem;
+            color: var(--brown);
+            letter-spacing: 2px;
+        }
+
+        .stage-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 16px;
+        }
+
+        .station {
+            border: 2px solid var(--red);
+            padding: 14px;
+            background: var(--cream-light);
+        }
+
+        .station-name {
+            font-weight: 700;
+            color: var(--red);
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .station-role {
+            font-size: 0.65rem;
+            color: var(--brown);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--cream-dark);
+        }
+
+        .station-gear {
+            font-size: 0.7rem;
+            color: var(--red-dark);
+            line-height: 1.6;
+        }
+
+        .station-gear-item {
+            margin-bottom: 2px;
+        }
+
+        /* Grid positions */
+        .station-jon {
+            grid-column: 2 / 4;
+            grid-row: 1;
+        }
+
+        .station-backups {
+            grid-column: 4;
+            grid-row: 1;
+            background: var(--cream);
+            border-style: dashed;
+        }
+
+        .station-ben {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .station-scott {
+            grid-column: 2 / 4;
+            grid-row: 2;
+        }
+
+        .station-shane {
+            grid-column: 4;
+            grid-row: 2;
+        }
+
+        /* Cabling */
+        .cabling-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed var(--brown-light);
+        }
+
+        .cabling-title {
+            font-size: 0.7rem;
+            color: var(--brown);
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .cable-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.7rem;
+        }
+
+        .cable-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: var(--cream);
+            border: 1px solid var(--cream-dark);
+        }
+
+        .cable-type {
+            padding: 2px 6px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            min-width: 45px;
+            text-align: center;
+            color: var(--cream);
+        }
+
+        .cable-audio {
+            background: var(--red);
+        }
+
+        .cable-midi {
+            background: var(--brown);
+        }
+
+        .cable-route {
+            color: var(--red-dark);
+        }
+
+        .audience-label {
+            text-align: center;
+            font-size: 0.65rem;
+            color: var(--brown);
+            letter-spacing: 2px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--brown-light);
+            margin-top: 20px;
+        }
+
+        /* Gear Checklist */
+        .gear-section {
+            margin-bottom: 16px;
+        }
+
+        .gear-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .gear-name {
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .gear-items {
+            padding-left: 20px;
+        }
+
+        .gear-item {
+            color: var(--red-dark);
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .gear-item-backup {
+            color: var(--brown);
+            font-style: italic;
+        }
+
+        /* Input List */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 50px 1fr 120px;
+            gap: 0;
+            font-size: 0.8rem;
+        }
+
+        .input-row {
+            display: contents;
+        }
+
+        .input-row > * {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--cream-dark);
+        }
+
+        .input-ch {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        .input-source {
+            color: var(--red-dark);
+        }
+
+        .input-owner {
+            color: var(--brown);
+        }
+
+        .input-header > * {
+            background: var(--cream);
+            font-weight: 600;
+            color: var(--brown);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        /* Failsafe */
+        .failsafe-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .failsafe-item {
+            border: 2px solid var(--red);
+            padding: 16px;
+            background: var(--cream);
+        }
+
+        .failsafe-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 6px;
+        }
+
+        .failsafe-desc {
+            font-size: 0.7rem;
+            color: var(--brown);
+        }
+
+        .status-line {
+            font-size: 0.7rem;
+            color: var(--brown);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--cream-dark);
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .stage-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .station-jon {
+                grid-column: 1 / -1;
+                grid-row: auto;
+            }
+
+            .station-ben {
+                grid-column: 1;
+                grid-row: auto;
+            }
+
+            .station-scott {
+                grid-column: 2;
+                grid-row: auto;
+            }
+
+            .station-shane {
+                grid-column: 1 / -1;
+                grid-row: auto;
+            }
+
+            .cable-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .stage-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .station-jon,
+            .station-ben,
+            .station-scott,
+            .station-shane {
+                grid-column: 1;
+            }
+
+            .input-grid {
+                grid-template-columns: 40px 1fr;
+            }
+
+            .input-owner {
+                display: none;
+            }
+
+            .failsafe-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← BACK</a>
+        
+        <div class="header">
+            <h1>STAGE PLOT + GEAR</h1>
+            <div class="subtitle">MARCH REUNION</div>
+        </div>
+
+        <!-- Stage Plot Visual -->
+        <div class="terminal-block">
+            <div class="terminal-header">
+                <span>STAGE PLOT</span>
+            </div>
+            <div class="terminal-body">
+                <div class="stage-plot">
+                    <div class="stage-label">STAGE</div>
+                    <div class="stage-grid">
+                        
+                        <!-- Backups - Back of Stage -->
+                        <div class="station station-backups">
+                            <div class="station-name">BACKUPS</div>
+                            <div class="station-role">Shane / Scott</div>
+                            <div class="station-gear">
+                                <div class="station-gear-item">Backup Amp (Dr Z Maz38)</div>
+                                <div class="station-gear-item">Backup Guitar (JV Tele)</div>
+                            </div>
+                        </div>
+
+                        <!-- Jon - Back Center -->
+                        <div class="station station-jon">
+                            <div class="station-name">JON</div>
+                            <div class="station-role">Drums</div>
+                            <div class="station-gear">
+                                <div class="station-gear-item">Kit</div>
+                                <div class="station-gear-item">IEM Rig</div>
+                            </div>
+                        </div>
+
+                        <!-- Shane - Stage Right -->
+                        <div class="station station-shane">
+                            <div class="station-name">SHANE</div>
+                            <div class="station-role">Guitar / Synth / Tracks</div>
+                            <div class="station-gear">
+                                <div class="station-gear-item">Amp / Guitar</div>
+                                <div class="station-gear-item">Pedalboard</div>
+                                <div class="station-gear-item">Keyboard</div>
+                                <div class="station-gear-item">Laptop / Apollo (behind)</div>
+                            </div>
+                        </div>
+
+                        <!-- Ben - Stage Left -->
+                        <div class="station station-ben">
+                            <div class="station-name">BEN</div>
+                            <div class="station-role">Bass</div>
+                            <div class="station-gear">
+                                <div class="station-gear-item">Bass / Amp</div>
+                            </div>
+                        </div>
+
+                        <!-- Scott - Center -->
+                        <div class="station station-scott">
+                            <div class="station-name">SCOTT</div>
+                            <div class="station-role">Guitar</div>
+                            <div class="station-gear">
+                                <div class="station-gear-item">Guitar / Amp</div>
+                                <div class="station-gear-item">Pedalboard</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Cabling -->
+                    <div class="cabling-section">
+                        <div class="cabling-title">Cabling (Shane's Rig)</div>
+                        <div class="cable-grid">
+                            <div class="cable-item">
+                                <span class="cable-type cable-audio">AUDIO</span>
+                                <span class="cable-route">Apollo Out 1/2 → FOH (Tracks L/R)</span>
+                            </div>
+                            <div class="cable-item">
+                                <span class="cable-type cable-audio">AUDIO</span>
+                                <span class="cable-route">Apollo Out 3 → Jon IEM (Click)</span>
+                            </div>
+                            <div class="cable-item">
+                                <span class="cable-type cable-audio">AUDIO</span>
+                                <span class="cable-route">Apollo Out 5/6 → FOH (Synth L/R)</span>
+                            </div>
+                            <div class="cable-item">
+                                <span class="cable-type cable-audio">AUDIO</span>
+                                <span class="cable-route">Prophet 5 → Chorus → Reverb → Apollo In</span>
+                            </div>
+                            <div class="cable-item">
+                                <span class="cable-type cable-midi">MIDI</span>
+                                <span class="cable-route">MC6 ↔ Apollo (USB)</span>
+                            </div>
+                            <div class="cable-item">
+                                <span class="cable-type cable-midi">MIDI</span>
+                                <span class="cable-route">Apollo ↔ Laptop (Thunderbolt)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="audience-label">↓ AUDIENCE ↓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gear Checklist -->
+        <div class="terminal-block">
+            <div class="terminal-header">
+                <span>GEAR CHECKLIST</span>
+            </div>
+            <div class="terminal-body">
+                <div class="gear-section">
+                    <div class="gear-name">> BEN</div>
+                    <div class="gear-items">
+                        <div class="gear-item">Bass</div>
+                        <div class="gear-item">Bass Amp</div>
+                    </div>
+                </div>
+                <div class="gear-section">
+                    <div class="gear-name">> JON</div>
+                    <div class="gear-items">
+                        <div class="gear-item">4-Piece Vistalite Kit</div>
+                        <div class="gear-item">3 Cymbals</div>
+                        <div class="gear-item">In-Ear Monitors</div>
+                        <div class="gear-item">Mini Mixer (IEM)</div>
+                    </div>
+                </div>
+                <div class="gear-section">
+                    <div class="gear-name">> SCOTT</div>
+                    <div class="gear-items">
+                        <div class="gear-item">Electric Guitar</div>
+                        <div class="gear-item">Acoustic Guitar (maybe)</div>
+                        <div class="gear-item">Amp</div>
+                        <div class="gear-item">Pedalboard</div>
+                    </div>
+                </div>
+                <div class="gear-section">
+                    <div class="gear-name">> SHANE</div>
+                    <div class="gear-items">
+                        <div class="gear-item">Fender Thinline Tele (primary)</div>
+                        <div class="gear-item gear-item-backup">Fender JV Tele (backup)</div>
+                        <div class="gear-item">Headstrong Lil King (primary)</div>
+                        <div class="gear-item gear-item-backup">Dr Z Maz38 (backup)</div>
+                        <div class="gear-item">Pedalboard</div>
+                        <div class="gear-item">Morningstar MC6</div>
+                        <div class="gear-item">Prophet 5</div>
+                        <div class="gear-item">Chorus Pedal → Reverb Pedal</div>
+                        <div class="gear-item">UA Apollo</div>
+                        <div class="gear-item">Laptop (Reaper)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input List -->
+        <div class="terminal-block">
+            <div class="terminal-header">
+                <span>INPUT LIST</span>
+            </div>
+            <div class="terminal-body">
+                <div class="input-grid">
+                    <div class="input-row input-header">
+                        <div>CH</div>
+                        <div>SOURCE</div>
+                        <div>OWNER</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">1</div>
+                        <div class="input-source">Kick</div>
+                        <div class="input-owner">Jon</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">2</div>
+                        <div class="input-source">Snare</div>
+                        <div class="input-owner">Jon</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">3</div>
+                        <div class="input-source">Tom 1</div>
+                        <div class="input-owner">Jon</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">4</div>
+                        <div class="input-source">Tom 2</div>
+                        <div class="input-owner">Jon</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">5</div>
+                        <div class="input-source">OH L</div>
+                        <div class="input-owner">Jon</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">6</div>
+                        <div class="input-source">OH R</div>
+                        <div class="input-owner">Jon</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">7</div>
+                        <div class="input-source">Bass DI</div>
+                        <div class="input-owner">Ben</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">8</div>
+                        <div class="input-source">Guitar Amp (Scott)</div>
+                        <div class="input-owner">Scott</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">9</div>
+                        <div class="input-source">Guitar Amp (Shane)</div>
+                        <div class="input-owner">Shane</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">10</div>
+                        <div class="input-source">Tracks L (Apollo 1)</div>
+                        <div class="input-owner">Shane</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">11</div>
+                        <div class="input-source">Tracks R (Apollo 2)</div>
+                        <div class="input-owner">Shane</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">12</div>
+                        <div class="input-source">Synth L (Apollo 5)</div>
+                        <div class="input-owner">Shane</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">13</div>
+                        <div class="input-source">Synth R (Apollo 6)</div>
+                        <div class="input-owner">Shane</div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-ch">14</div>
+                        <div class="input-source">Click (Apollo 3) → Jon IEM</div>
+                        <div class="input-owner">Shane</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Failsafe -->
+        <div class="terminal-block">
+            <div class="terminal-header">
+                <span>FAILSAFE</span>
+            </div>
+            <div class="terminal-body">
+                <div class="failsafe-grid">
+                    <div class="failsafe-item">
+                        <div class="failsafe-title">BACKUP AMP</div>
+                        <div class="failsafe-desc">Dr Z Maz38 on stage, standby</div>
+                    </div>
+                    <div class="failsafe-item">
+                        <div class="failsafe-title">BACKUP GUITAR</div>
+                        <div class="failsafe-desc">Fender JV Tele, tuned</div>
+                    </div>
+                    <div class="failsafe-item">
+                        <div class="failsafe-title">BACKUP TRACKS</div>
+                        <div class="failsafe-desc">Shane's phone</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-line">
+            CHEMIC // MARCH REUNION
+        </div>
+    </div>
+</body>
+</html>
